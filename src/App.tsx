@@ -4,6 +4,7 @@ import { GameDetailProps } from "./interfaces";
 import axios, { AxiosResponse } from "axios";
 import { getThumbnailName } from "./utilities";
 import { motion, AnimatePresence } from "framer-motion";
+import Footer from "./components/Footer";
 
 const App: React.FC = (): React.ReactElement => {
   const [games, setGames] = useState<GameDetailProps[]>([]);
@@ -99,8 +100,9 @@ const App: React.FC = (): React.ReactElement => {
 
       {/* Colonna centrale: header sopra e lista card centrata */}
       <div className="flex flex-col h-screen w-full max-w-[500px] mx-auto relative">
-        {/* Header sempre sopra */}
-        <div className="absolute top-4 left-1/2 -translate-x-1/2 flex items-center justify-center gap-3 py-2 z-40 pointer-events-none bg-black/0">
+        {/* Header sempre sopra, attaccato al margine superiore */}
+        <div className="absolute top-0 left-1/2 -translate-x-1/2 flex items-center justify-center gap-3 py-2 z-40 pointer-events-none
+        bg-black/40 backdrop-blur-md rounded-xl px-4">
           <img
             src="/profilePic.jpg"
             alt="Profile"
@@ -109,9 +111,7 @@ const App: React.FC = (): React.ReactElement => {
           <span className="text-5xl font-bold text-transparent bg-clip-text bg-gradient-to-b from-yellow-300 via-yellow-400 to-yellow-500 drop-shadow-lg whitespace-nowrap">
             TITOLI ANALIZZATI
           </span>
-        </div>
-
-        {/* Scroll delle card */}
+        </div>        {/* Scroll delle card */}
         <div className="overflow-y-auto p-6 pt-36 flex-1 flex flex-col items-center space-y-6">
           {games.map((game) => (
             <div
@@ -169,7 +169,8 @@ const App: React.FC = (): React.ReactElement => {
           <OverlayLink href={selectedGame?.analisiAggiornata} />
         </div>
       </div>
-    </div>
+      <Footer />
+    </div >
   );
 };
 
