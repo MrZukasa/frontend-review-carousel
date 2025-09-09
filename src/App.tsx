@@ -44,6 +44,16 @@ const App: React.FC = (): React.ReactElement => {
   const iframeClasses =
     "absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 h-screen w-[177.77vh]";
 
+  // Overlay cliccabile con default scuro e hover più chiaro
+  const OverlayLink: React.FC<{ href?: string }> = ({ href }) => (
+    <a
+      href={href}
+      target="_blank"
+      rel="noopener noreferrer"
+      className="absolute inset-0 z-30 bg-black/50 hover:bg-black/20 transition-colors duration-300"
+    />
+  );
+
   return (
     <div className="bg-black text-white h-screen grid grid-cols-[1fr_2fr_1fr]">
       {/* Colonna sinistra: Recensione Originale */}
@@ -89,6 +99,9 @@ const App: React.FC = (): React.ReactElement => {
               ></motion.iframe>
             )}
           </AnimatePresence>
+
+          {/* Overlay scuro con hover più chiaro */}
+          <OverlayLink href={selectedGame?.recensioneOriginale} />
         </div>
       </div>
 
@@ -110,8 +123,8 @@ const App: React.FC = (): React.ReactElement => {
               key={game.id}
               onClick={() => setSelectedGame(game)}
               className={`cursor-pointer transition transform ${selectedGame?.id === game.id
-                  ? "scale-105 border-4 border-blue-500 rounded-2xl"
-                  : "hover:scale-105 hover:animate-pulse"
+                ? "scale-105 border-4 border-blue-500 rounded-2xl"
+                : "hover:scale-105 hover:animate-pulse"
                 }`}
             >
               <GameCard game={game} />
@@ -163,6 +176,9 @@ const App: React.FC = (): React.ReactElement => {
               ></motion.iframe>
             )}
           </AnimatePresence>
+
+          {/* Overlay scuro con hover più chiaro */}
+          <OverlayLink href={selectedGame?.analisiAggiornata} />
         </div>
       </div>
     </div>
