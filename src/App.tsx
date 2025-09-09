@@ -44,7 +44,6 @@ const App: React.FC = (): React.ReactElement => {
   const iframeClasses =
     "absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 h-screen w-[177.77vh]";
 
-  // Overlay cliccabile con default scuro e hover più chiaro
   const OverlayLink: React.FC<{ href?: string }> = ({ href }) => (
     <a
       href={href}
@@ -58,17 +57,12 @@ const App: React.FC = (): React.ReactElement => {
     <div className="bg-black text-white h-screen grid grid-cols-[1fr_2fr_1fr]">
       {/* Colonna sinistra: Recensione Originale */}
       <div className="flex flex-col items-center h-screen relative overflow-hidden">
-        {/* Titolo fisso */}
         <div className="absolute top-0 left-0 w-full flex items-start justify-center z-20 pointer-events-none">
           <p className="mt-4 text-2xl font-bold text-transparent bg-clip-text bg-gradient-to-b from-yellow-300 via-yellow-400 to-yellow-500 drop-shadow-lg text-center">
             RECENSIONE ORIGINALE
           </p>
         </div>
-
-        {/* Gradiente lato interno sempre visibile */}
         <div className="absolute top-0 right-0 h-full w-8 bg-gradient-to-l from-black via-black/40 to-transparent z-10 pointer-events-none" />
-
-        {/* Contenuto */}
         <div className="flex-1 w-full h-full flex items-center justify-center relative">
           <AnimatePresence mode="wait">
             {!showVideo && recensioneId && (
@@ -99,8 +93,6 @@ const App: React.FC = (): React.ReactElement => {
               ></motion.iframe>
             )}
           </AnimatePresence>
-
-          {/* Overlay scuro con hover più chiaro */}
           <OverlayLink href={selectedGame?.recensioneOriginale} />
         </div>
       </div>
@@ -123,8 +115,8 @@ const App: React.FC = (): React.ReactElement => {
               key={game.id}
               onClick={() => setSelectedGame(game)}
               className={`cursor-pointer transition transform ${selectedGame?.id === game.id
-                ? "scale-105 border-4 border-blue-500 rounded-2xl"
-                : "hover:scale-105 hover:animate-pulse"
+                  ? "scale-105 border-4 border-blue-500 rounded-2xl animate-pulse" // bordo completo + pulse
+                  : "hover:scale-105 hover:animate-pulse rounded-2xl"
                 }`}
             >
               <GameCard game={game} />
@@ -135,17 +127,12 @@ const App: React.FC = (): React.ReactElement => {
 
       {/* Colonna destra: Analisi Aggiornata */}
       <div className="flex flex-col items-center h-screen relative overflow-hidden">
-        {/* Titolo fisso */}
         <div className="absolute top-0 left-0 w-full flex items-start justify-center z-20 pointer-events-none">
           <p className="mt-4 text-2xl font-bold text-transparent bg-clip-text bg-gradient-to-b from-yellow-300 via-yellow-400 to-yellow-500 drop-shadow-lg text-center">
             ANALISI AGGIORNATA
           </p>
         </div>
-
-        {/* Gradiente lato interno sempre visibile */}
         <div className="absolute top-0 left-0 h-full w-8 bg-gradient-to-r from-black via-black/40 to-transparent z-10 pointer-events-none" />
-
-        {/* Contenuto */}
         <div className="flex-1 w-full h-full flex items-center justify-center relative">
           <AnimatePresence mode="wait">
             {!showVideo && analisiId && (
@@ -176,8 +163,6 @@ const App: React.FC = (): React.ReactElement => {
               ></motion.iframe>
             )}
           </AnimatePresence>
-
-          {/* Overlay scuro con hover più chiaro */}
           <OverlayLink href={selectedGame?.analisiAggiornata} />
         </div>
       </div>
