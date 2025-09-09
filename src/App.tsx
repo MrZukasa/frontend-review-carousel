@@ -54,11 +54,11 @@ const App: React.FC = (): React.ReactElement => {
   );
 
   return (
-    <div className="bg-black text-white h-screen grid grid-cols-[1fr_2fr_1fr]">
+    <div className="bg-black text-white h-screen grid grid-cols-[1fr_auto_1fr]">
       {/* Colonna sinistra: Recensione Originale */}
       <div className="flex flex-col items-center h-screen relative overflow-hidden">
-        <div className="absolute top-0 left-0 w-full flex items-start justify-center z-20 pointer-events-none">
-          <p className="mt-4 text-2xl font-bold text-transparent bg-clip-text bg-gradient-to-b from-yellow-300 via-yellow-400 to-yellow-500 drop-shadow-lg text-center">
+        <div className="absolute top-12 left-0 w-full flex items-start justify-center z-20 pointer-events-none">
+          <p className="text-2xl font-bold text-transparent bg-clip-text bg-gradient-to-b from-yellow-300 via-yellow-400 to-yellow-500 drop-shadow-lg text-center">
             RECENSIONE ORIGINALE
           </p>
         </div>
@@ -90,33 +90,36 @@ const App: React.FC = (): React.ReactElement => {
                 animate={{ opacity: 1 }}
                 exit={{ opacity: 0 }}
                 transition={{ duration: 0.5 }}
-              ></motion.iframe>
+              />
             )}
           </AnimatePresence>
           <OverlayLink href={selectedGame?.recensioneOriginale} />
         </div>
       </div>
 
-      {/* Colonna centrale: header fisso + lista scrollabile */}
-      <div className="flex flex-col h-screen">
-        <div className="flex items-center justify-center gap-4 py-4 bg-black z-10">
+      {/* Colonna centrale: header sopra e lista card centrata */}
+      <div className="flex flex-col h-screen w-full max-w-[500px] mx-auto relative">
+        {/* Header sempre sopra */}
+        <div className="absolute top-4 left-1/2 -translate-x-1/2 flex items-center justify-center gap-3 py-2 z-40 pointer-events-none bg-black/0">
           <img
             src="/profilePic.jpg"
             alt="Profile"
-            className="w-32 h-32 rounded-full object-cover border-4 border-blue-500"
+            className="w-28 h-28 rounded-full object-cover border-4 border-blue-500"
           />
-          <span className="text-6xl font-bold text-transparent bg-clip-text bg-gradient-to-b from-yellow-300 via-yellow-400 to-yellow-500 drop-shadow-lg">
+          <span className="text-5xl font-bold text-transparent bg-clip-text bg-gradient-to-b from-yellow-300 via-yellow-400 to-yellow-500 drop-shadow-lg whitespace-nowrap">
             TITOLI ANALIZZATI
           </span>
         </div>
-        <div className="overflow-y-auto p-6 space-y-6 flex-1">
+
+        {/* Scroll delle card */}
+        <div className="overflow-y-auto p-6 pt-36 flex-1 flex flex-col items-center space-y-6">
           {games.map((game) => (
             <div
               key={game.id}
               onClick={() => setSelectedGame(game)}
               className={`cursor-pointer transition transform ${selectedGame?.id === game.id
-                  ? "scale-105 border-4 border-blue-500 rounded-2xl animate-pulse" // bordo completo + pulse
-                  : "hover:scale-105 hover:animate-pulse rounded-2xl"
+                ? "scale-105 border-4 border-blue-500 rounded-2xl animate-pulse"
+                : "hover:scale-105 hover:animate-pulse rounded-2xl"
                 }`}
             >
               <GameCard game={game} />
@@ -127,8 +130,8 @@ const App: React.FC = (): React.ReactElement => {
 
       {/* Colonna destra: Analisi Aggiornata */}
       <div className="flex flex-col items-center h-screen relative overflow-hidden">
-        <div className="absolute top-0 left-0 w-full flex items-start justify-center z-20 pointer-events-none">
-          <p className="mt-4 text-2xl font-bold text-transparent bg-clip-text bg-gradient-to-b from-yellow-300 via-yellow-400 to-yellow-500 drop-shadow-lg text-center">
+        <div className="absolute top-12 left-0 w-full flex items-start justify-center z-20 pointer-events-none">
+          <p className="text-2xl font-bold text-transparent bg-clip-text bg-gradient-to-b from-yellow-300 via-yellow-400 to-yellow-500 drop-shadow-lg text-center">
             ANALISI AGGIORNATA
           </p>
         </div>
@@ -160,7 +163,7 @@ const App: React.FC = (): React.ReactElement => {
                 animate={{ opacity: 1 }}
                 exit={{ opacity: 0 }}
                 transition={{ duration: 0.5 }}
-              ></motion.iframe>
+              />
             )}
           </AnimatePresence>
           <OverlayLink href={selectedGame?.analisiAggiornata} />
