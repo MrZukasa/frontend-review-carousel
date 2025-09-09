@@ -1,4 +1,5 @@
 import React from "react";
+import { motion, AnimatePresence } from "framer-motion";
 
 interface VideoPreviewProps {
   thumbnail?: string | null;
@@ -7,25 +8,42 @@ interface VideoPreviewProps {
 }
 
 const VideoPreview: React.FC<VideoPreviewProps> = ({ thumbnail, href, alt }) => {
-  const content = thumbnail ? (
-    <img
-      src={thumbnail}
-      alt={alt ?? "video preview"}
-      className="rounded-xl shadow-2xl w-96 h-60 object-cover"
-      loading="lazy"
-    />
-  ) : (
-    <div className="rounded-xl bg-gray-800 w-96 h-60 flex items-center justify-center text-gray-400">
-      <span>Nessuna anteprima</span>
+  return (
+    <div className="w-96 h-60 flex items-center justify-center">
+      <AnimatePresence mode="wait">
+        {thumbnail ? (
+          <motion.a
+            key={thumbnail} // serve per far triggerare l’animazione al cambio immagine
+            href={href}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="block w-full h-full"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.5 }}
+          >
+            <img
+              src={thumbnail}
+              alt={alt ?? "video preview"}
+              className="rounded-xl shadow-2xl w-full h-full object-cover"
+              loading="lazy"
+            />
+          </motion.a>
+        ) : (
+          <motion.div
+            key="no-thumbnail"
+            className="rounded-xl bg-gray-800 w-full h-full flex items-center justify-center text-gray-400"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.5 }}
+          >
+            <span>Nessuna anteprima</span>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </div>
-  );
-
-  return href ? (
-    <a href={href} target="_blank" rel="noopener noreferrer" className="block">
-      {content}
-    </a>
-  ) : (
-    <div>{content}</div>
   );
 };
 

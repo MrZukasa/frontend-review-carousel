@@ -39,29 +39,52 @@ const App: React.FC = (): React.ReactElement => {
       : "";
 
   return (
-    <div className="bg-gray-900 text-white h-screen grid grid-cols-[1fr_2fr_1fr]">
-      {/* colonna sinistra → recensione */}
-      <div className="flex flex-col items-center justify-center border-r border-gray-700 space-y-4">
-        <h2 className="text-xl font-bold text-gray-200">Recensione Originale</h2>
-        {recensioneThumb && (
-          <VideoPreview
-            thumbnail={recensioneThumb}
-            href={selectedGame?.recensioneOriginale}
-            alt={`${selectedGame?.nomeGioco} recensione`}
-          />
-        )}
+    <div className="bg-black text-white h-screen grid grid-rows-[auto_1fr] grid-cols-[1fr_2fr_1fr]">
+      {/* riga superiore: titoli fissi */}
+      <div className="col-span-1 flex items-center justify-center border-r border-gray-700 py-4">
+        <p className="text-2xl font-bold text-transparent bg-clip-text bg-gradient-to-b from-yellow-300 via-yellow-400 to-yellow-500 drop-shadow-lg text-center">
+          RECENSIONE ORIGINALE
+        </p>
       </div>
 
-      {/* colonna centrale → lista scrollabile */}
+      <div className="col-span-1 flex items-center justify-center py-4 gap-4">
+        <img
+          src="/profilePic.jpg"
+          alt="Profile"
+          className="w-32 h-32 rounded-full object-cover border-4 border-blue-500"
+        />
+        <span className="text-6xl font-bold text-transparent bg-clip-text bg-gradient-to-b from-yellow-300 via-yellow-400 to-yellow-500 drop-shadow-lg">
+          TITOLI ANALIZZATI
+        </span>
+      </div>
+
+      <div className="col-span-1 flex items-center justify-center border-l border-gray-700 py-4">
+        <p className="text-2xl font-bold text-transparent bg-clip-text bg-gradient-to-b from-yellow-300 via-yellow-400 to-yellow-500 drop-shadow-lg text-center">
+          ANALISI AGGIORNATA
+        </p>
+      </div>
+
+      {/* riga inferiore: contenuto */}
+      <div className="flex flex-col items-center justify-center border-r border-gray-700">
+        <div className="flex-1 flex items-center justify-center">
+          {recensioneThumb && (
+            <VideoPreview
+              thumbnail={recensioneThumb}
+              href={selectedGame?.recensioneOriginale}
+              alt={`${selectedGame?.nomeGioco} recensione`}
+            />
+          )}
+        </div>
+      </div>
+
       <div className="overflow-y-auto p-6 space-y-6">
-        <div className="text-3xl font-bold text-center mb-6">🎮 Game Selector</div>
         {games.map((game) => (
           <div
             key={game.id}
             onClick={() => setSelectedGame(game)}
             className={`cursor-pointer transition transform ${selectedGame?.id === game.id
-              ? "scale-105 ring-4 ring-blue-500"
-              : "hover:scale-105"
+                ? "scale-105 border-4 border-yellow-500 rounded-2xl"
+                : "hover:scale-105 hover:animate-pulse"
               }`}
           >
             <GameCard game={game} />
@@ -69,16 +92,16 @@ const App: React.FC = (): React.ReactElement => {
         ))}
       </div>
 
-      {/* colonna destra → analisi */}
-      <div className="flex flex-col items-center justify-center border-l border-gray-700 space-y-4">
-        <h2 className="text-xl font-bold text-gray-200">Analisi Aggiornata</h2>
-        {analisiThumb && (
-          <VideoPreview
-            thumbnail={analisiThumb}
-            href={selectedGame?.analisiAggiornata}
-            alt={`${selectedGame?.nomeGioco} analisi`}
-          />
-        )}
+      <div className="flex flex-col items-center justify-center border-l border-gray-700">
+        <div className="flex-1 flex items-center justify-center">
+          {analisiThumb && (
+            <VideoPreview
+              thumbnail={analisiThumb}
+              href={selectedGame?.analisiAggiornata}
+              alt={`${selectedGame?.nomeGioco} analisi`}
+            />
+          )}
+        </div>
       </div>
     </div>
   );
