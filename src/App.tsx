@@ -2,7 +2,6 @@ import { useEffect, useState } from "react";
 import GameCard from "./components/GameCard";
 import { GameDetailProps } from "./interfaces";
 import axios, { AxiosResponse } from "axios";
-import { getThumbnailName } from "./utilities";
 import { motion, AnimatePresence } from "framer-motion";
 import Footer from "./components/Footer";
 
@@ -12,6 +11,10 @@ const App: React.FC = (): React.ReactElement => {
   const [error, setError] = useState<string | null>(null);
   const [selectedGame, setSelectedGame] = useState<GameDetailProps | null>(null);
   const [showVideo, setShowVideo] = useState<boolean>(false);
+
+  // Funzione per generare URL thumbnail da YouTube
+  const youtubeThumbnail = (videoId: string) =>
+    `https://img.youtube.com/vi/${videoId}/maxresdefault.jpg`;
 
   useEffect(() => {
     axios
@@ -69,7 +72,7 @@ const App: React.FC = (): React.ReactElement => {
             {!showVideo && recensioneId && (
               <motion.img
                 key="thumbnail-left"
-                src={`/thumbnail/${getThumbnailName(selectedGame.recensioneOriginale)}`}
+                src={youtubeThumbnail(recensioneId)}
                 alt={`${selectedGame.nomeGioco} recensione`}
                 className="absolute inset-0 m-auto max-w-full max-h-full object-contain shadow-2xl"
                 initial={{ opacity: 0, scale: 0.95 }}
@@ -111,7 +114,8 @@ const App: React.FC = (): React.ReactElement => {
           <span className="text-5xl font-bold text-transparent bg-clip-text bg-gradient-to-b from-yellow-300 via-yellow-400 to-yellow-500 drop-shadow-lg whitespace-nowrap">
             TITOLI ANALIZZATI
           </span>
-        </div>        {/* Scroll delle card */}
+        </div>
+        {/* Scroll delle card */}
         <div className="overflow-y-auto p-6 pt-36 flex-1 flex flex-col items-center space-y-6">
           {games.map((game) => (
             <div
@@ -141,7 +145,7 @@ const App: React.FC = (): React.ReactElement => {
             {!showVideo && analisiId && (
               <motion.img
                 key="thumbnail-right"
-                src={`/thumbnail/${getThumbnailName(selectedGame.analisiAggiornata)}`}
+                src={youtubeThumbnail(analisiId)}
                 alt={`${selectedGame.nomeGioco} analisi`}
                 className="absolute inset-0 m-auto max-w-full max-h-full object-contain shadow-2xl"
                 initial={{ opacity: 0, scale: 0.95 }}
@@ -169,8 +173,9 @@ const App: React.FC = (): React.ReactElement => {
           <OverlayLink href={selectedGame?.analisiAggiornata} />
         </div>
       </div>
+
       <Footer />
-    </div >
+    </div>
   );
 };
 
