@@ -2,10 +2,10 @@ import { useState } from "react";
 import { GameDetailProps } from "../interfaces";
 import GameCard from "../components/GameCard";
 import DatePicker from "react-datepicker";
+import axios from "axios";
 
 const CMSPage: React.FC = () => {
-  const [formData, setFormData] = useState<GameDetailProps>({
-    id: Date.now(),
+  const [formData, setFormData] = useState<Omit<GameDetailProps, "id">>({
     nomeGioco: "",
     votoLancio: null,
     votoAggiornato: null,
@@ -13,8 +13,8 @@ const CMSPage: React.FC = () => {
     analisiAggiornata: null,
     ultimaRevisione: null,
   });
-
   const [submittedData, setSubmittedData] = useState<GameDetailProps[]>([]);
+  const [loading, setLoading] = useState(false);
 
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
@@ -32,7 +32,16 @@ const CMSPage: React.FC = () => {
     }));
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  // Funzione per aggiungere automaticamente http:// se manca
+  const normalizeUrl = (url: string | null) => {
+    if (!url) return null;
+    if (!/^https?:\/\//i.test(url)) {
+      return `http://${url}`;
+    }
+    return url;
+  };
+
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
     if (!formData.nomeGioco) {
@@ -40,21 +49,40 @@ const CMSPage: React.FC = () => {
       return;
     }
 
-    setSubmittedData((prev) => [
-      ...prev,
-      { ...formData, id: Date.now() },
-    ]);
+    try {
+      setLoading(true);
 
-    // reset
-    setFormData({
-      id: Date.now(),
-      nomeGioco: "",
-      votoLancio: null,
-      votoAggiornato: null,
-      recensioneOriginale: null,
-      analisiAggiornata: null,
-      ultimaRevisione: null,
-    });
+      // Prepara i dati con URL normalizzati
+      const payload = {
+        ...formData,
+        recensioneOriginale: normalizeUrl(formData.recensioneOriginale),
+        analisiAggiornata: normalizeUrl(formData.analisiAggiornata),
+      };
+
+      // POST al backend
+      const response = await axios.post<GameDetailProps>(
+        import.meta.env.VITE_LOCAL_URL_API,
+        payload
+      );
+
+      // aggiorna lista locale con risposta dal server
+      setSubmittedData((prev) => [...prev, response.data]);
+
+      // reset form
+      setFormData({
+        nomeGioco: "",
+        votoLancio: null,
+        votoAggiornato: null,
+        recensioneOriginale: null,
+        analisiAggiornata: null,
+        ultimaRevisione: null,
+      });
+    } catch (error) {
+      console.error(error);
+      alert("Errore durante l'invio del gioco!");
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -74,7 +102,8 @@ const CMSPage: React.FC = () => {
           placeholder="Nome Gioco"
           value={formData.nomeGioco || ""}
           onChange={handleChange}
-          className="w-full p-2 rounded bg-gray-800 border border-gray-600 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 text-white" />
+          className="w-full p-2 rounded bg-gray-800 border border-gray-600 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 text-white"
+        />
         <input
           type="number"
           name="votoLancio"
@@ -91,7 +120,8 @@ const CMSPage: React.FC = () => {
           placeholder="Voto Aggiornato"
           value={formData.votoAggiornato ?? ""}
           onChange={handleChange}
-          className="w-full p-2 rounded bg-gray-800 border border-gray-600 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 text-white" min={0}
+          className="w-full p-2 rounded bg-gray-800 border border-gray-600 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 text-white"
+          min={0}
           max={10}
         />
         <input
@@ -100,20 +130,22 @@ const CMSPage: React.FC = () => {
           placeholder="Link Recensione Originale"
           value={formData.recensioneOriginale || ""}
           onChange={handleChange}
-          className="w-full p-2 rounded bg-gray-800 border border-gray-600 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 text-white" />
+          className="w-full p-2 rounded bg-gray-800 border border-gray-600 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 text-white"
+        />
         <input
           type="text"
           name="analisiAggiornata"
           placeholder="Link Analisi Aggiornata"
           value={formData.analisiAggiornata || ""}
           onChange={handleChange}
-          className="w-full p-2 rounded bg-gray-800 border border-gray-600 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 text-white" />
+          className="w-full p-2 rounded bg-gray-800 border border-gray-600 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 text-white"
+        />
         <DatePicker
           selected={formData.ultimaRevisione ? new Date(formData.ultimaRevisione) : null}
           onChange={(date: Date | null) =>
             setFormData((prev) => ({
               ...prev,
-              ultimaRevisione: date ? date.toISOString().split("T")[0] : null, // salva in formato YYYY-MM-DD
+              ultimaRevisione: date ? date.toISOString().split("T")[0] : null,
             }))
           }
           dateFormat="yyyy-MM-dd"
@@ -124,8 +156,9 @@ const CMSPage: React.FC = () => {
         <button
           type="submit"
           className="w-full py-2 bg-indigo-600 hover:bg-indigo-700 rounded-lg font-bold transition"
+          disabled={loading}
         >
-          Aggiungi
+          {loading ? "Caricamento..." : "Aggiungi"}
         </button>
       </form>
 
