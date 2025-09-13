@@ -1,1 +1,41 @@
 @import "tailwindcss";
+@import "react-datepicker/dist/react-datepicker.css";
+
+.dark-calendar {
+  @apply bg-black text-gray-100 border border-indigo-500 rounded-lg;
+}
+
+/* Header mese e giorni della settimana */
+.dark-calendar .react-datepicker__header {
+  @apply bg-black border-b border-gray-700;
+  /* sfondo nero e bordo sotto */
+}
+
+.dark-calendar .react-datepicker__current-month,
+.dark-calendar .react-datepicker__day-name {
+  @apply text-yellow-400 font-bold;
+  /* testo oro */
+}
+
+/* Giorni del mese */
+.dark-calendar .react-datepicker__day {
+  @apply text-gray-300;
+}
+
+/* Giorno selezionato */
+.dark-calendar .react-datepicker__day--selected,
+.dark-calendar .react-datepicker__day--keyboard-selected {
+  @apply bg-indigo-500 text-white;
+}
+
+/* Hover sui giorni */
+.dark-calendar .react-datepicker__day:hover {
+  @apply bg-yellow-400 text-black rounded-full;
+  /* oro + testo nero */
+}
+
+.react-datepicker-wrapper,
+.react-datepicker__input-container input {
+  width: 100%;
+  box-sizing: border-box;
+}
