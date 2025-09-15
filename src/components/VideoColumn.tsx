@@ -5,7 +5,7 @@ import { VideoColumnProps } from "../interfaces";
 const getThumbnail = (videoId: string): string =>
   `https://img.youtube.com/vi/${videoId}/maxresdefault.jpg`;
 
-const VideoColumn: React.FC<VideoColumnProps> = ({ title, videoUrl, showVideo, iframeClasses }: VideoColumnProps): React.ReactElement => {
+const VideoColumn: React.FC<VideoColumnProps> = ({ title, videoUrl, showVideo, iframeClasses, position }: VideoColumnProps): React.ReactElement => {
   const videoId = videoUrl?.split("/").pop();
 
   return (
@@ -15,7 +15,10 @@ const VideoColumn: React.FC<VideoColumnProps> = ({ title, videoUrl, showVideo, i
           {title}
         </p>
       </div>
-      <div className="absolute top-0 right-0 h-full w-8 bg-gradient-to-l from-black via-black/40 to-transparent z-10 pointer-events-none" />
+      <div className={`absolute top-0 h-full w-8 z-10 pointer-events-none ${position === "left"
+        ? "left-0 bg-gradient-to-r from-black via-black/40 to-transparent"
+        : "right-0 bg-gradient-to-l from-black via-black/40 to-transparent"
+        }`} />
       <div className="flex-1 w-full h-full flex items-center justify-center relative">
         <AnimatePresence mode="wait">
           {!showVideo && videoId && (

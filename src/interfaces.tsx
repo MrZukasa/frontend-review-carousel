@@ -1,10 +1,10 @@
 export interface GameDetailProps {
   id: number;
   nomeGioco: string;
-  votoLancio: number | null;
-  votoAggiornato: number | null;
-  recensioneOriginale: string | null;
-  analisiAggiornata: string | null;
+  votoLancio: number | undefined;
+  votoAggiornato: number | undefined;
+  recensioneOriginale: string | undefined;
+  analisiAggiornata: string | undefined;
   ultimaRevisione: string | null;
 };
 
@@ -21,6 +21,7 @@ export interface VideoColumnProps {
   videoUrl?: string;
   showVideo: boolean;
   iframeClasses: string;
+  position: string,
 }
 
 export interface CenterColumnProps {

@@ -48,6 +48,7 @@ const App: React.FC = (): React.ReactElement => {
         videoUrl={selectedGame?.recensioneOriginale}
         showVideo={showVideo}
         iframeClasses={iframeClasses}
+        position="right"
       />
 
       <CenterColumn
@@ -61,6 +62,7 @@ const App: React.FC = (): React.ReactElement => {
         videoUrl={selectedGame?.analisiAggiornata}
         showVideo={showVideo}
         iframeClasses={iframeClasses}
+        position="left"
       />
 
       <Footer />
