@@ -4,13 +4,13 @@ import GameCard from "../components/GameCard";
 import DatePicker from "react-datepicker";
 import axios from "axios";
 
-const CMSPage: React.FC = () => {
+const CMSPage: React.FC = (): React.ReactElement => {
   const [formData, setFormData] = useState<Omit<GameDetailProps, "id">>({
     nomeGioco: "",
-    votoLancio: null,
-    votoAggiornato: null,
-    recensioneOriginale: null,
-    analisiAggiornata: null,
+    votoLancio: undefined,
+    votoAggiornato: undefined,
+    recensioneOriginale: undefined,
+    analisiAggiornata: undefined,
     ultimaRevisione: null,
   });
   const [submittedData, setSubmittedData] = useState<GameDetailProps[]>([]);
@@ -33,7 +33,7 @@ const CMSPage: React.FC = () => {
   };
 
   // Funzione per aggiungere automaticamente http:// se manca
-  const normalizeUrl = (url: string | null) => {
+  const normalizeUrl = (url: string | null): string | null => {
     if (!url) return null;
     if (!/^https?:\/\//i.test(url)) {
       return `http://${url}`;
@@ -55,8 +55,8 @@ const CMSPage: React.FC = () => {
       // Prepara i dati con URL normalizzati
       const payload = {
         ...formData,
-        recensioneOriginale: normalizeUrl(formData.recensioneOriginale),
-        analisiAggiornata: normalizeUrl(formData.analisiAggiornata),
+        recensioneOriginale: normalizeUrl(formData.recensioneOriginale ?? ''),
+        analisiAggiornata: normalizeUrl(formData.analisiAggiornata ?? ''),
       };
 
       // POST al backend
@@ -71,10 +71,10 @@ const CMSPage: React.FC = () => {
       // reset form
       setFormData({
         nomeGioco: "",
-        votoLancio: null,
-        votoAggiornato: null,
-        recensioneOriginale: null,
-        analisiAggiornata: null,
+        votoLancio: undefined,
+        votoAggiornato: undefined,
+        recensioneOriginale: undefined,
+        analisiAggiornata: undefined,
         ultimaRevisione: null,
       });
     } catch (error) {

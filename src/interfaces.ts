@@ -1,3 +1,5 @@
+import type { User } from "@supabase/supabase-js"
+
 export interface GameDetailProps {
   id: number;
   nomeGioco: string;
@@ -29,3 +31,14 @@ export interface CenterColumnProps {
   selectedGame: GameDetailProps | null;
   setSelectedGame: React.Dispatch<React.SetStateAction<GameDetailProps | null>>;
 }
+
+export interface ProtectedRouteProps {
+  user: User | null
+  children: React.ReactNode
+}
+
+export interface AuthContextProps {
+  user: User | null;
+  loading: boolean;
+};
+
