@@ -3,9 +3,8 @@ import { GameCardProps } from "../utilities/interfaces";
 import { motion } from "framer-motion";
 
 const GameCard: React.FC<GameCardProps> = ({ game }: GameCardProps): React.ReactElement => {
-  // Funzione per determinare il colore del badge in base al voto
   const getBadgeColor = (vote?: number) => {
-    if (vote === undefined || vote === null) return "bg-gray-500"; // N/D
+    if (vote === undefined || vote === null) return "bg-gray-500";
     if (vote >= 8) return "bg-green-500";
     if (vote >= 5) return "bg-yellow-500";
     return "bg-red-500";

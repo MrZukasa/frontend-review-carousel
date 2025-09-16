@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { supabase } from "../utilities/supabaseClient";
 import { useNavigate } from "react-router-dom";
 
-const LoginPage: React.FC = () => {
+const LoginPage: React.FC = (): React.ReactElement => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);

@@ -3,7 +3,7 @@ import { supabase } from "../utilities/supabaseClient";
 import { AuthChangeEvent, Session, User } from "@supabase/supabase-js";
 import { AuthContext } from "./AuthContext";
 
-export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
+export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }: { children: React.ReactNode }): React.ReactElement => {
   const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(true);
 

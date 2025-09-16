@@ -39,3 +39,13 @@
   width: 100%;
   box-sizing: border-box;
 }
+
+select {
+  -webkit-appearance: none;
+  -moz-appearance: none;
+}
+
+select:focus {
+  outline: none;
+  box-shadow: none;
+}

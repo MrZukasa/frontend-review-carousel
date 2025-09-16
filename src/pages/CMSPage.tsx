@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { GameDetailProps } from "../utilities/interfaces";
 import GameCard from "../components/GameCard";
 import DatePicker from "react-datepicker";
@@ -18,68 +18,85 @@ const CMSPage: React.FC = (): React.ReactElement => {
   });
   const [submittedData, setSubmittedData] = useState<GameDetailProps[]>([]);
   const [loading, setLoading] = useState(false);
+  const [games, setGames] = useState<GameDetailProps[]>([]);
+  const [selectedGameId, setSelectedGameId] = useState<number | null>(null);
+  const [submitMsg, setSubmitMsg] = useState<{ type: "success" | "error"; text: string } | null>(null);
+  const [deleteMsg, setDeleteMsg] = useState<{ type: "success" | "error"; text: string } | null>(null);
+  const [isPreviewOpen, setIsPreviewOpen] = useState(true);
   const navigate = useNavigate();
   const { user } = useAuth();
 
-  const handleChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
-  ) => {
+  // 🔹 Fetch giochi già presenti in DB
+  useEffect(() => {
+    const fetchGames = async () => {
+      try {
+        const response = await axios.get<GameDetailProps[]>(
+          import.meta.env.VITE_LOCAL_URL_API
+        );
+        setGames(response.data);
+      } catch (error) {
+        console.error("Errore caricamento giochi:", error);
+      }
+    };
+    fetchGames();
+  }, []);
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     const { name, value } = e.target;
 
     setFormData((prev) => ({
       ...prev,
-      [name]:
-        value === ""
-          ? null
-          : name.includes("voto")
-            ? Number(value)
-            : value,
+      [name]: value === "" ? null
+        : name.includes("voto") ? Number(value)
+          : value,
     }));
   };
 
-  // Funzione per aggiungere automaticamente http:// se manca
   const normalizeUrl = (url: string | null): string | null => {
     if (!url) return null;
-    if (!/^https?:\/\//i.test(url)) {
-      return `http://${url}`;
-    }
+    if (!/^https?:\/\//i.test(url)) return `http://${url}`;
     return url;
   };
-
 
   const handleLogout = async () => {
     await supabase.auth.signOut();
     navigate("/login");
   };
 
+  // 🔹 POST protetto
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
     if (!formData.nomeGioco) {
-      alert("Inserisci almeno il nome del gioco!");
+      setSubmitMsg({ type: "error", text: "Inserisci almeno il nome del gioco!" });
       return;
     }
 
     try {
       setLoading(true);
+      setSubmitMsg(null);
 
-      // Prepara i dati con URL normalizzati
       const payload = {
         ...formData,
-        recensioneOriginale: normalizeUrl(formData.recensioneOriginale ?? ''),
-        analisiAggiornata: normalizeUrl(formData.analisiAggiornata ?? ''),
+        recensioneOriginale: normalizeUrl(formData.recensioneOriginale ?? ""),
+        analisiAggiornata: normalizeUrl(formData.analisiAggiornata ?? ""),
       };
 
-      // POST al backend
+      const { data } = await supabase.auth.getSession();
+      const token = data.session?.access_token;
+
       const response = await axios.post<GameDetailProps>(
         import.meta.env.VITE_LOCAL_URL_API,
-        payload
+        payload,
+        {
+          headers: token ? { Authorization: `Bearer ${token}` }
+            : {}
+        }
       );
 
-      // aggiorna lista locale con risposta dal server
       setSubmittedData((prev) => [...prev, response.data]);
+      setGames((prev) => [...prev, response.data]);
 
-      // reset form
       setFormData({
         nomeGioco: "",
         votoLancio: undefined,
@@ -88,13 +105,42 @@ const CMSPage: React.FC = (): React.ReactElement => {
         analisiAggiornata: undefined,
         ultimaRevisione: null,
       });
-    } catch (error) {
-      console.error(error);
-      alert("Errore durante l'invio del gioco!");
+
+      setSubmitMsg({ type: "success", text: "Gioco aggiunto correttamente!" });
+    } catch {
+      setSubmitMsg({ type: "error", text: "Errore durante l'invio del gioco!" });
     } finally {
       setLoading(false);
     }
   };
+
+  // 🔹DELETE protetta
+  const handleDelete = async () => {
+    if (!selectedGameId) {
+      setDeleteMsg({ type: "error", text: "Seleziona un gioco da eliminare!" });
+      return;
+    }
+
+    if (!confirm("Sei sicuro di voler eliminare questo gioco?")) return;
+
+    try {
+      setDeleteMsg(null);
+
+      const { data } = await supabase.auth.getSession();
+      const token = data.session?.access_token;
+
+      await axios.delete(`${import.meta.env.VITE_LOCAL_URL_API}${selectedGameId}`, {
+        headers: token ? { Authorization: `Bearer ${token}` } : {},
+      });
+
+      setGames((prev) => prev.filter((game) => game.id !== selectedGameId));
+      setSelectedGameId(null);
+      setDeleteMsg({ type: "success", text: "Gioco eliminato correttamente!" });
+    } catch {
+      setDeleteMsg({ type: "error", text: "Errore durante l'eliminazione del gioco!" });
+    }
+  };
+
   if (!user) {
     return (
       <div className="min-h-screen flex items-center justify-center text-white">
@@ -159,7 +205,9 @@ const CMSPage: React.FC = (): React.ReactElement => {
           className="w-full p-2 rounded bg-gray-800 border border-gray-600 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 text-white"
         />
         <DatePicker
-          selected={formData.ultimaRevisione ? new Date(formData.ultimaRevisione) : null}
+          selected={
+            formData.ultimaRevisione ? new Date(formData.ultimaRevisione) : null
+          }
           onChange={(date: Date | null) =>
             setFormData((prev) => ({
               ...prev,
@@ -179,27 +227,78 @@ const CMSPage: React.FC = (): React.ReactElement => {
           {loading ? "Caricamento..." : "Aggiungi"}
         </button>
       </form>
+      {/* Messaggio post */}
+      {submitMsg && (
+        <p className={`mt-2 text-sm ${submitMsg.type === "success" ? "text-green-400" : "text-red-400"}`}>
+          {submitMsg.text}
+        </p>
+      )}
+
+      {/* SELEZIONE GIOCO DA ELIMINARE */}
+      <form
+        onSubmit={(e) => {
+          e.preventDefault();
+          handleDelete();
+        }}
+        className="w-full max-w-lg rounded-xl p-6 shadow-md/30 shadow-red-400 space-y-4 mt-8"
+      >
+        <h2 className="text-xl font-semibold text-red-400">Elimina un gioco</h2>
+        <select
+          value={selectedGameId ?? ""}
+          onChange={(e) => setSelectedGameId(Number(e.target.value))}
+          className="w-full p-2 rounded bg-gray-800 border border-gray-600 focus:ring-2 focus:border-red-500 text-white"
+        >
+          <option value="">-- Seleziona un gioco --</option>
+          {games.map((game) => (
+            <option key={game.id} value={game.id}>
+              {game.nomeGioco}
+            </option>
+          ))}
+        </select>
+        <button
+          type="submit"
+          className="w-full py-2 bg-red-600 hover:bg-red-700 rounded-lg font-bold transition"
+        >
+          Elimina
+        </button>
+      </form>
+      {/* Messaggio delete */}
+      {deleteMsg && (
+        <p className={`mt-2 text-sm ${deleteMsg.type === "success" ? "text-green-400" : "text-red-400"}`}>
+          {deleteMsg.text}
+        </p>
+      )}
       <div className="mt-4 !items-start text-sm">
         <button
           onClick={handleLogout}
-          className="text-sm text-yellow-300 relative after:absolute after:bottom-0 after:left-0 after:w-0 after:h-[1px] after:bg-yellow-300 after:transition-all after:duration-300 hover:after:w-full"
+          className="text-sm text-yellow-300 hover:underline"
         >
           Logout
         </button>
       </div>
 
-      {/* LISTA INSERIMENTI */}
+      {/* LISTA INSERIMENTI LOCALI */}
       <div className="mt-10 w-full max-w-lg space-y-6">
-        <h2 className="text-2xl font-semibold mb-4">Anteprima giochi inseriti</h2>
-        {submittedData.length === 0 ? (
-          <p className="text-gray-400">Nessun gioco inserito.</p>
-        ) : (
-          submittedData.map((game) => (
-            <GameCard key={game.id} game={game} />
-          ))
+        <button
+          onClick={() => setIsPreviewOpen(prev => !prev)}
+          className="flex items-center justify-between w-full text-2xl font-semibold mb-4 focus:outline-none"
+        >
+          <span>Anteprima giochi inseriti (solo sessione)</span>
+          <span className="text-yellow-300">
+            {isPreviewOpen ? "⤴" : "⤵"}
+          </span>
+        </button>
+
+        {isPreviewOpen && (
+          <>
+            {submittedData.length === 0 ? (
+              <p className="text-gray-400">Nessun gioco inserito in questa sessione.</p>
+            ) : (
+              submittedData.map((game) => <GameCard key={game.id} game={game} />)
+            )}
+          </>
         )}
-      </div>
-    </div>
+      </div>    </div>
   );
 };
 

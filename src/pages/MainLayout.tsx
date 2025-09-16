@@ -6,7 +6,7 @@ import CenterColumn from "../components/CenterColumn";
 import Footer from "../components/Footer";
 
 
-const MainLayout = () => {
+const MainLayout = (): React.ReactElement => {
   const [games, setGames] = useState<GameDetailProps[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
@@ -14,18 +14,33 @@ const MainLayout = () => {
   const [showVideo, setShowVideo] = useState<boolean>(false);
 
   useEffect(() => {
-    axios
-      .get<GameDetailProps[]>(import.meta.env.VITE_LOCAL_URL_API)
-      .then((res: AxiosResponse<GameDetailProps[]>) => {
-        setGames(res.data);
-        setSelectedGame(res.data[0]);
-        setLoading(false);
-      })
-      .catch((err) => {
-        console.error(err);
-        setError("Errore nel recupero dei giochi");
-        setLoading(false);
-      });
+    let isMounted = true;
+    const fetchGames = async (): Promise<void> => {
+      try {
+        setLoading(true);
+        setError(null);
+
+        const response: AxiosResponse<GameDetailProps[]> = await axios.get(
+          import.meta.env.VITE_LOCAL_URL_API
+        );
+
+        if (isMounted) {
+          setGames(response.data);
+          setSelectedGame(response.data[0] || null); // protezione se array vuoto
+        }
+      } catch (err) {
+        console.error("Errore nel recupero dei giochi:", err);
+        if (isMounted) setError("Errore nel recupero dei giochi");
+      } finally {
+        if (isMounted) setLoading(false);
+      }
+    };
+
+    fetchGames();
+
+    return () => {
+      isMounted = false;
+    };
   }, []);
 
   useEffect(() => {

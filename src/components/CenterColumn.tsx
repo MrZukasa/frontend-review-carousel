@@ -7,7 +7,7 @@ const CenterColumn: React.FC<CenterColumnProps> = ({ games, selectedGame, setSel
       <div className="absolute top-0 left-1/2 -translate-x-1/2 flex items-center justify-center gap-3 py-2 z-40 pointer-events-none
         bg-black/40 backdrop-blur-md rounded-xl px-4">
         <img
-          src="/profilePic.jpg"
+          src="/profilePic.png"
           alt="Profile"
           className="w-28 h-28 rounded-full object-cover border-4 border-blue-500"
         />
