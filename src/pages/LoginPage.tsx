@@ -19,7 +19,7 @@ const LoginPage: React.FC = (): React.ReactElement => {
     if (error) {
       setErrorMsg(error.message);
     } else {
-      navigate("/admin"); // dopo login vai in /admin
+      navigate("/admin");
     }
 
     setLoading(false);
@@ -30,7 +30,7 @@ const LoginPage: React.FC = (): React.ReactElement => {
       <div className="w-full max-w-md bg-black/40 backdrop-blur-md rounded-xl p-6 shadow-md">
         <div className="flex items-center gap-4 mb-6">
           <img
-            src="/profilePic.jpg"
+            src="/profilePic.png"
             alt="Profile"
             className="w-16 h-16 rounded-full object-cover border-4 border-blue-500"
           />
