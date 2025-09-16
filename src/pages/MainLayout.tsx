@@ -1,9 +1,9 @@
 import { useEffect, useState } from "react";
 import axios, { AxiosResponse } from "axios";
-import { GameDetailProps } from "../interfaces";
-import VideoColumn from "./VideoColumn";
-import CenterColumn from "./CenterColumn";
-import Footer from "./Footer";
+import { GameDetailProps } from "../utilities/interfaces";
+import VideoColumn from "../components/VideoColumn";
+import CenterColumn from "../components/CenterColumn";
+import Footer from "../components/Footer";
 
 
 const MainLayout = () => {

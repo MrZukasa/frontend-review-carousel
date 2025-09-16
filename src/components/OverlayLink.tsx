@@ -1,4 +1,4 @@
-import { OverlayLinkProps } from "../interfaces";
+import { OverlayLinkProps } from "../utilities/interfaces";
 
 const OverlayLink: React.FC<OverlayLinkProps> = ({ href }: OverlayLinkProps): React.ReactElement => (
   <a

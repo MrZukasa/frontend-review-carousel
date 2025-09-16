@@ -1,4 +1,4 @@
-import { CenterColumnProps, GameDetailProps } from "../interfaces";
+import { CenterColumnProps, GameDetailProps } from "../utilities/interfaces";
 import GameCard from "./GameCard";
 
 const CenterColumn: React.FC<CenterColumnProps> = ({ games, selectedGame, setSelectedGame }: CenterColumnProps): React.ReactElement => {

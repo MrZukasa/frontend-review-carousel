@@ -1,9 +1,9 @@
 import { BrowserRouter, Routes, Route } from "react-router-dom";
-import MainLayout from "./components/MainLayout";
+import MainLayout from "./pages/MainLayout";
 import ProtectedRoute from "./components/ProtectedRoute";
-import CMSPage from "./components/CMSPage";
-import LoginPage from "./components/LoginPage";
-import { AuthProvider } from "./components/AuthProvider";
+import CMSPage from "./pages/CMSPage";
+import LoginPage from "./pages/LoginPage";
+import { AuthProvider } from "./contexts/AuthProvider";
 
 const App: React.FC = (): React.ReactElement => {
 

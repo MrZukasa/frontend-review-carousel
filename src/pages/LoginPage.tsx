@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { supabase } from "../components/supabaseClient";
+import { supabase } from "../utilities/supabaseClient";
 import { useNavigate } from "react-router-dom";
 
 const LoginPage: React.FC = () => {
@@ -23,11 +23,6 @@ const LoginPage: React.FC = () => {
     }
 
     setLoading(false);
-  };
-
-  const handleLogout = async () => {
-    await supabase.auth.signOut();
-    navigate("/login");
   };
 
   return (
@@ -76,15 +71,6 @@ const LoginPage: React.FC = () => {
             {loading ? "Caricamento..." : "Accedi"}
           </button>
         </form>
-
-        <div className="mt-4 flex items-center justify-between text-sm text-gray-400">
-          <button
-            onClick={handleLogout}
-            className="text-yellow-300 hover:underline"
-          >
-            Logout
-          </button>
-        </div>
       </div>
     </div>
   );

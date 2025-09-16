@@ -1,6 +1,6 @@
 import { motion, AnimatePresence } from "framer-motion";
 import OverlayLink from "./OverlayLink";
-import { VideoColumnProps } from "../interfaces";
+import { VideoColumnProps } from "../utilities/interfaces";
 
 const getThumbnail = (videoId: string): string =>
   `https://img.youtube.com/vi/${videoId}/maxresdefault.jpg`;

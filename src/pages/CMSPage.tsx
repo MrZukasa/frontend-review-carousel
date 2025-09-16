@@ -1,8 +1,11 @@
 import { useState } from "react";
-import { GameDetailProps } from "../interfaces";
+import { GameDetailProps } from "../utilities/interfaces";
 import GameCard from "../components/GameCard";
 import DatePicker from "react-datepicker";
 import axios from "axios";
+import { useAuth } from "../utilities/useAuth";
+import { supabase } from "../utilities/supabaseClient";
+import { useNavigate } from "react-router-dom";
 
 const CMSPage: React.FC = (): React.ReactElement => {
   const [formData, setFormData] = useState<Omit<GameDetailProps, "id">>({
@@ -15,6 +18,8 @@ const CMSPage: React.FC = (): React.ReactElement => {
   });
   const [submittedData, setSubmittedData] = useState<GameDetailProps[]>([]);
   const [loading, setLoading] = useState(false);
+  const navigate = useNavigate();
+  const { user } = useAuth();
 
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
@@ -39,6 +44,12 @@ const CMSPage: React.FC = (): React.ReactElement => {
       return `http://${url}`;
     }
     return url;
+  };
+
+
+  const handleLogout = async () => {
+    await supabase.auth.signOut();
+    navigate("/login");
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -84,6 +95,13 @@ const CMSPage: React.FC = (): React.ReactElement => {
       setLoading(false);
     }
   };
+  if (!user) {
+    return (
+      <div className="min-h-screen flex items-center justify-center text-white">
+        <p>Devi effettuare il login per accedere al CMS</p>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-black text-white flex flex-col items-center py-10">
@@ -161,6 +179,14 @@ const CMSPage: React.FC = (): React.ReactElement => {
           {loading ? "Caricamento..." : "Aggiungi"}
         </button>
       </form>
+      <div className="mt-4 !items-start text-sm">
+        <button
+          onClick={handleLogout}
+          className="text-sm text-yellow-300 relative after:absolute after:bottom-0 after:left-0 after:w-0 after:h-[1px] after:bg-yellow-300 after:transition-all after:duration-300 hover:after:w-full"
+        >
+          Logout
+        </button>
+      </div>
 
       {/* LISTA INSERIMENTI */}
       <div className="mt-10 w-full max-w-lg space-y-6">

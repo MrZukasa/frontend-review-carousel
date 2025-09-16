@@ -1,5 +1,5 @@
 import { Link } from "react-router-dom";
-import { GameCardProps } from "../interfaces";
+import { GameCardProps } from "../utilities/interfaces";
 import { motion } from "framer-motion";
 
 const GameCard: React.FC<GameCardProps> = ({ game }: GameCardProps): React.ReactElement => {
