@@ -49,3 +49,34 @@ select:focus {
   outline: none;
   box-shadow: none;
 }
+
+/* Larghezza della scrollbar */
+::-webkit-scrollbar {
+  width: 10px;
+}
+
+/* Traccia (sfondo della scrollbar) */
+::-webkit-scrollbar-track {
+  background: #000000;
+  /* grigio scuro */
+}
+
+/* Thumb (la parte che si muove) */
+::-webkit-scrollbar-thumb {
+  background: #4f46e5;
+  /* indigo-600 */
+  border-radius: 6px;
+}
+
+/* Hover sul thumb */
+::-webkit-scrollbar-thumb:hover {
+  background: #4338ca;
+  /* indigo-700 */
+}
+
+::-webkit-scrollbar-thumb {
+  background: rgba(79, 70, 229, 0.7);
+  border-radius: 6px;
+  border: 2px solid #1f1f1f;
+  /* bordo che crea distacco */
+}
